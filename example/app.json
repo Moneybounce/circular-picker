@@ -1,0 +1,23 @@
+{
+  "name": "react-native-circular-picker-example",
+  "displayName": "CircularPicker Example",
+  "expo": {
+    "name": "react-native-circular-picker-example",
+    "slug": "react-native-circular-picker-example",
+    "description": "Example app for react-native-circular-picker",
+    "privacy": "public",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "jsEngine": "hermes",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
