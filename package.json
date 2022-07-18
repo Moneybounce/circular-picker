@@ -1,7 +1,7 @@
 {
   "name": "react-native-circular-picker",
   "version": "0.1.0",
-  "description": "test",
+  "description": "A javascript circular picker that works on ios, android and web.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -36,7 +36,7 @@
     "android"
   ],
   "repository": "https://github.com/Moneybounce/circular-picker",
-  "author": "Moneybounce <dev@moneybounce.fr> (https://moneybounce.fr)",
+  "author": "Moneybounce <dev@moneybounce.fr> (https://moneybounce.fr)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Moneybounce/circular-picker/issues"
@@ -46,7 +46,6 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@arkweid/lefthook": "^0.7.7",
     "@babel/eslint-parser": "^7.18.2",
     "@commitlint/config-conventional": "^17.0.2",
     "@react-native-community/eslint-config": "^3.0.2",
@@ -79,11 +78,6 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
-    ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
     ]
   },
   "release-it": {
