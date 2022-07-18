@@ -1,18 +1,30 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-circular-picker';
+import { StyleSheet, View } from 'react-native';
+import CircularPicker from 'react-native-circular-picker';
 
 export default function App() {
   const [result, setResult] = React.useState<number | undefined>();
 
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <CircularPicker
+        size={80}
+        strokeWidth={20}
+        defaultPos={0}
+        steps={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
+        gradients={[
+          ['#FF5A5F', '#FF5A5F'],
+          ['#FFC371', '#FFC371'],
+        ]}
+        backgroundColor="#FFF"
+        stepColor="#FFF"
+        borderColor="#FFF"
+        onChange={(pos) => setResult(pos)}
+        breakResponder={true}
+      >
+        <View>{result}</View>
+      </CircularPicker>
     </View>
   );
 }
