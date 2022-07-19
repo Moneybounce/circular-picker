@@ -4,43 +4,10 @@ import { PanResponder, Platform, StyleProp, View, ViewStyle } from 'react-native
 import Svg, {
   Circle, Defs, G, LinearGradient, Path, Stop
 } from 'react-native-svg';
-
-const { PI, cos, sin, atan2 } = Math;
+import { calculateAngle, calculateMovement, calculateRealPos, percentToPos, posToPercent } from './utils';
 
 //  const pointerEvents = Platform.OS === 'android' ? { pointerEvents: 'box-none' } : null;
 
-const calculateAngle = (pos: number, radius: number) => {
-  const startAngle = ((2 * PI) - (PI * -0.5));
-  const endAngle = (PI + (PI * pos));
-
-  const x1 = -radius * cos(startAngle);
-  const y1 = -radius * sin(startAngle);
-
-  const x2 = -radius * cos(endAngle);
-  const y2 = -radius * sin(endAngle);
-
-  return { x1, y1, x2, y2 };
-};
-
-const calculateRealPos = (x: number, y: number, radius: number, strokeWidth: number) => ({
-  endX: x + radius + strokeWidth / 2,
-  endY: y + radius + strokeWidth / 2,
-});
-
-const calculateMovement = (x: number, y: number, radius: number, strokeWidth: number) => {
-  const cx = ((x + strokeWidth) / radius) - PI / 2;
-  const cy = -(((y + strokeWidth) / radius) - PI / 2);
-
-  let pos = -atan2(cy, cx) / PI;
-  if (pos < -0.5) {
-    pos += 2;
-  }
-
-  return pos;
-};
-
-const percentToPos = (percent: number) => (2 / 100 * percent) - 0.5;
-const posToPercent = (pos: number) => 100 * (pos + 0.5) / 2;
 
 const selectGradient = (gradients: { [key: number]: string[] }, pos: number) => {
   const current = posToPercent(pos);
@@ -133,7 +100,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
       if (typeof p === 'number') {
         const pos = percentToPos(p);
         const { x2, y2 } = calculateAngle(pos, radius);
-        const { endX: x, endY: y } = calculateRealPos(x2, y2, radius, strokeWidth);
+        const { x, y } = calculateRealPos(x2, y2, radius, strokeWidth);
         return { x, y, p };
       }
 
@@ -142,7 +109,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
   }
 
   const { x1, y1, x2, y2 } = calculateAngle(pos, radius);
-  const { endX, endY } = calculateRealPos(x2, y2, radius, strokeWidth);
+  const { x: endX, y: endY } = calculateRealPos(x2, y2, radius, strokeWidth);
 
   const _handleStartShouldSetPanResponder = (): boolean => {
     console.log('start responder')
