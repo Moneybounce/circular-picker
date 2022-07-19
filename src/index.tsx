@@ -1,4 +1,3 @@
-// import * as Haptics from 'expo-haptics';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { PanResponder, Platform, StyleProp, View, ViewStyle } from 'react-native';
@@ -148,7 +147,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
   const _handleStartShouldSetPanResponder = (): boolean => {
     console.log('start responder')
     // return setDisabledScroll();
-    return true;
+    return false;
   };
 
 
@@ -156,6 +155,8 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
     onMoveShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponderCapture: () => true,
     onPanResponderMove: (_, { moveX, moveY }) => {
+      console.log(moveX, moveY);
+      
       circle.current?.measure((
         _x: number,
         _y: number,
@@ -226,7 +227,6 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
     )
   }
 
-
   const d = `
     M ${x2.toFixed(3)} ${y2.toFixed(3)}
     A ${radius} ${radius}
@@ -250,7 +250,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
     }}
     {...pan.panHandlers}
   >
-    <Svg height={size} width={size}  >
+    <Svg height={size} width={size} style={{overflow: 'visible'}} >
       <Defs>
         <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
           <Stop offset="0" stopColor={gradient && gradient[0]} />
@@ -280,7 +280,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         <G transform={{ translate: `${step.x + padding}, ${step.y + padding}` }} key={index}>
           <Circle
             r={strokeWidth}
-            fill="transparent"
+            fill="#000"
             strokeWidth="12"
           />
           <Circle
@@ -295,7 +295,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         {!breakResponder &&
           <Circle
             r={(strokeWidth) / 1.9 + (padding)}
-            fill={gradient && gradient[1]}
+            fill={'#1f1f1f'}
             stroke={'#000'}
             strokeWidth={padding + 55}
           />
