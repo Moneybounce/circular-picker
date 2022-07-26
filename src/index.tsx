@@ -2,33 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { PanResponder, Platform, StyleProp, View, ViewStyle } from 'react-native';
 import Svg, {
-  Circle, Defs, G, LinearGradient, Path, Stop
+  Circle, CircleProps, Defs, G, Path, PathProps
 } from 'react-native-svg';
 import { calculateAngle, calculateMovement, calculateRealPos, percentToPos, posToPercent } from './utils';
-
-//  const pointerEvents = Platform.OS === 'android' ? { pointerEvents: 'box-none' } : null;
-
-
-const selectGradient = (gradients: { [key: number]: string[] }, pos: number) => {
-  const current = posToPercent(pos);
-  let selected = 0;
-
-  for (const [key] of Object.entries(gradients)) {
-    let nKey = Number(key);
-    if (nKey > selected && nKey < current) {
-      selected = nKey;
-    }
-  }
-
-  return gradients[selected];
-};
 
 export interface CircularPickerProps {
   size: number;
   strokeWidth?: number;
   defaultPos: number;
   steps: number[] | {x: number, y: number, p: number}[];
-  gradients: { [key: number]: string[] };
   backgroundColor?: string;
   stepColor?: string;
   borderColor?: string;
@@ -36,6 +18,12 @@ export interface CircularPickerProps {
   children: any;
   breakResponder: boolean;
   isLoader?: boolean;
+  defsChildren?: React.ComponentElement<any, any>;
+  svgProps?: {
+    outerCirle?: CircleProps;
+    knob?: CircleProps;
+    progress?: PathProps;
+  }
 }
 
 const CircularPicker: React.FC<CircularPickerProps> = ({
@@ -43,19 +31,31 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
   strokeWidth = 45,
   defaultPos,
   steps,
-  gradients,
   backgroundColor = 'rgb(231, 231, 231)',
-  stepColor = 'rgba(0, 0, 0, 0.2)',
+  // stepColor = 'rgba(0, 0, 0, 0.2)',
   // borderColor = 'rgb(255, 255, 255)',
   children,
   onChange,
   breakResponder,
-  isLoader = false
+  isLoader = false,
+  defsChildren,
+  svgProps = {
+    outerCirle: {
+      stroke:"lightblue"
+    },
+    knob: {
+      fill: "yellow",
+      stroke: "lightgray"
+    },
+    progress: {
+      stroke: 'url(#grad)'
+    }
+  }
 }) => {
 
   const isNative = Platform.OS === "ios" || Platform.OS === "android"
 
-  const [pos, setPos] = useState(0);
+  const [pos, setPos] = useState(defaultPos);
   
   const circle = useRef<View>(null);
 
@@ -71,15 +71,9 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
   const radius = (size - strokeWidth) / 2 - padding;
   const center = (radius + strokeWidth / 2);
 
-  const gradient = selectGradient(gradients, pos);
-
   useEffect(() => {
     setPos(percentToPos(defaultPos));
   }, [defaultPos]);
-
-  useEffect(() => {
-    console.log(pos)
-  }, [pos])
 
   useEffect(() => {
     if (isLoader) {
@@ -117,13 +111,10 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
     return false;
   };
 
-
   const pan = useRef(PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponderCapture: () => true,
-    onPanResponderMove: (_, { moveX, moveY }) => {
-      console.log(moveX, moveY);
-      
+    onPanResponderMove: (_, { moveX, moveY }) => {      
       circle.current?.measure((
         _x: number,
         _y: number,
@@ -133,9 +124,6 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         py: number
       )=> {
         const newPos = calculateMovement(moveX - px, moveY - py, radius, strokeWidth);
-        /**
-         * @TODO
-         */
 
         if ((newPos < -0.3 && pos > 1.3)
           || (newPos > 1.3 && pos < -0.3)) {
@@ -143,10 +131,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         }
 
         if (!breakResponder) {
-          setPos((prev) => {
-            console.log(prev, newPos)
-            return newPos;
-          });
+          setPos(newPos);
           onChange(posToPercent(newPos));
           if (Math.floor(posToPercent(newPos)) % 10 === 0) {
             //  if (Platform.OS === 'ios') { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) }
@@ -159,16 +144,12 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
       // setEnabledScroll()
       
       setPos((prev: number) => {
-
         const current = posToPercent(prev);
-        console.log('does it break at the end :'+breakResponder)
-        
         if (!breakResponder) {
           if (current % 10 !== 0) {
             let releasepercent = Math.round(current / 10.0) * 10;
   
             onChange(releasepercent);
-            console.log(percentToPos(releasepercent))
             return percentToPos(releasepercent)
           }
         }
@@ -205,54 +186,53 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
 
   return (
     <View
-    ref={circle}
-    onLayout={() => {
-      if (!circle.current) return;
-      circle.current.measure((_x, _y, w, h, px, py) => {
-        location.current = {
-          x: px + w / 2,
-          y: py + h / 2,
-        };
-      });
-    }}
-    {...pan.panHandlers}
-  >
+      ref={circle}
+      onLayout={() => {
+        if (!circle.current) return;
+        circle.current.measure((_x, _y, w, h, px, py) => {
+          location.current = {
+            x: px + w / 2,
+            y: py + h / 2,
+          };
+        });
+      }}
+      {...pan.panHandlers}
+    >
     <Svg height={size} width={size} style={{overflow: 'visible'}} >
       <Defs>
-        <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
-          <Stop offset="0" stopColor={gradient && gradient[0]} />
-          <Stop offset="1" stopColor={gradient && gradient[1]} />
-        </LinearGradient>
+        {defsChildren}
       </Defs>
       <G transform={`translate(${strokeWidth / 2 + radius + padding}, ${strokeWidth / 2 + radius + padding})`}>
         <Circle
           r={radius}
           strokeWidth={strokeWidth}
-          fill="transparent"
-          stroke={backgroundColor}
+          fill='transparent'
+          {...svgProps.outerCirle}
         />
 
         <Path
           d={d}
           strokeWidth={strokeWidth}
-          stroke={`url(#grad)`}
-          fill="none"
+          fill="transparent"
+          {...svgProps.progress}
         />
 
       </G>
       <G transform={`translate(${center + padding}, ${strokeWidth / 2 + padding})`}>
-        <Circle r={(strokeWidth) / 2} fill={backgroundColor} />
+        <Circle r={(strokeWidth) / 2}
+          fill={svgProps.outerCirle?.stroke ? svgProps.outerCirle.stroke :  'transparent'}
+        />
       </G>
       {steps && steps.map((step, index) => (
         <G transform={{ translate: `${step.x + padding}, ${step.y + padding}` }} key={index}>
           <Circle
             r={strokeWidth}
-            fill="#000"
+            fill="transparent"
             strokeWidth="12"
           />
           <Circle
             r={(strokeWidth / 2.5) / 2}
-            fill={stepColor}
+            fill={"transparent"}
             strokeWidth="25"
           />
         </G>
@@ -262,17 +242,17 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         {!breakResponder &&
           <Circle
             r={(strokeWidth) / 1.9 + (padding)}
-            fill={'#1f1f1f'}
-            stroke={'#000'}
-            strokeWidth={padding + 55}
+            strokeWidth={padding}
+
+            {...svgProps.knob}
           />
         }
-        <Circle r={(strokeWidth) / 2} fill={'#000'} />
+        <Circle r={(strokeWidth) / 2} {...svgProps.knob} stroke='transparent' />
       </G>
       {isNative && children && renderChild()}
     </Svg>
       {!isNative && children && renderChild({position: 'absolute', top: -10, left: 58})}
-</View>
+    </View>
   );
 }
 

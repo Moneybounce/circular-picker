@@ -1,5 +1,12 @@
 # react-native-circular-picker
 A javascript circular picker that works on ios, android and web.
+
+
+## todo
+
+- [ ] ABSTRACT STYLES
+- [ ] ALLOW FOR FUNCTION TO BE RUN ON MOOVE AND ON STEP REACH
+
 ## Installation
 
 ```sh
