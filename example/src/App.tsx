@@ -24,14 +24,14 @@ export default function App() {
         }
         svgProps={{
           outerCirle: {
-            stroke:"#998fff",
+            stroke:"url(#grad)",
           },
           knob: {
             fill: "white",
-            stroke: "998fff",
+            stroke: "#998fff",
           },
           progress: {
-            stroke: 'url(#grad)'
+            stroke: '#998fff'
           }
         }}
       >
@@ -43,7 +43,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'blue',
+    backgroundColor: 'white',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

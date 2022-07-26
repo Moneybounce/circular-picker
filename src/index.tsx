@@ -211,14 +211,12 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
           fill='transparent'
           {...svgProps.outerCirle}
         />
-
         <Path
           d={d}
           strokeWidth={strokeWidth}
           fill="transparent"
           {...svgProps.progress}
         />
-
       </G>
       <G transform={`translate(${center + padding}, ${strokeWidth / 2 + padding})`}>
         <Circle r={(strokeWidth) / 2}
