@@ -15,8 +15,11 @@ export interface CircularPickerProps {
   stepColor?: string;
   borderColor?: string;
   onChange: (pos: number) => void;
+  onStart?: () => void;
+  onMove?: () => void;
+  onStop?: () => void;
   children: any;
-  breakResponder: boolean;
+  inactive: boolean;
   isLoader?: boolean;
   defsChildren?: React.ComponentElement<any, any>;
   svgProps?: {
@@ -36,7 +39,10 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
   // borderColor = 'rgb(255, 255, 255)',
   children,
   onChange,
-  breakResponder,
+  onStart,
+  onMove,
+  onStop,
+  inactive,
   isLoader = false,
   defsChildren,
   svgProps = {
@@ -106,8 +112,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
   const { x: endX, y: endY } = calculateRealPos(x2, y2, radius, strokeWidth);
 
   const _handleStartShouldSetPanResponder = (): boolean => {
-    console.log('start responder')
-    // return setDisabledScroll();
+    onStart && onStart();
     return false;
   };
 
@@ -123,6 +128,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         px: number,
         py: number
       )=> {
+        onMove && onMove();
         const newPos = calculateMovement(moveX - px, moveY - py, radius, strokeWidth);
 
         if ((newPos < -0.3 && pos > 1.3)
@@ -130,7 +136,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
           return;
         }
 
-        if (!breakResponder) {
+        if (!inactive) {
           setPos(newPos);
           onChange(posToPercent(newPos));
           if (Math.floor(posToPercent(newPos)) % 10 === 0) {
@@ -142,10 +148,10 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
     
     onPanResponderEnd: () => {
       // setEnabledScroll()
-      
+      onStop && onStop();
       setPos((prev: number) => {
         const current = posToPercent(prev);
-        if (!breakResponder) {
+        if (!inactive) {
           if (current % 10 !== 0) {
             let releasepercent = Math.round(current / 10.0) * 10;
   
@@ -239,7 +245,7 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
       ))}
 
       <G transform={`translate(${endX + padding}, ${endY + padding})`}>
-        {!breakResponder &&
+        {!inactive &&
           <Circle
             r={(strokeWidth) / 1.9 + (padding)}
             strokeWidth={padding}

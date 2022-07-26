@@ -18,7 +18,7 @@ export default function App() {
         stepColor="#FFF"
         borderColor="#FFF"
         onChange={(pos) => setResult(pos)}
-        breakResponder={false}
+        inactive={false}
         defsChildren={
           <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
             <Stop offset="0" stopColor={'#FF5A5F'} />
