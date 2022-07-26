@@ -14,17 +14,26 @@ export default function App() {
         strokeWidth={20}
         defaultPos={defaultValue}
         steps={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
-        backgroundColor="#FFF"
-        stepColor="#FFF"
-        borderColor="#FFF"
         onChange={(pos) => setResult(pos)}
         inactive={false}
         defsChildren={
           <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
-            <Stop offset="0" stopColor={'#FF5A5F'} />
-            <Stop offset="1" stopColor={'FFC371'} />
+            <Stop offset="0" stopColor={'#fff7b0 '} />
+            <Stop offset="1" stopColor={'#b7b0ff'} />
           </LinearGradient>
         }
+        svgProps={{
+          outerCirle: {
+            stroke:"#998fff",
+          },
+          knob: {
+            fill: "white",
+            stroke: "998fff",
+          },
+          progress: {
+            stroke: 'url(#grad)'
+          }
+        }}
       >
         <View>{result}</View>
       </CircularPicker>

@@ -11,12 +11,11 @@ export interface CircularPickerProps {
   strokeWidth?: number;
   defaultPos: number;
   steps: number[] | {x: number, y: number, p: number}[];
-  backgroundColor?: string;
   stepColor?: string;
   borderColor?: string;
   onChange: (pos: number) => void;
   onStart?: () => void;
-  onMove?: () => void;
+  onStep?: () => void;
   onStop?: () => void;
   children: any;
   inactive: boolean;
@@ -34,28 +33,25 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
   strokeWidth = 45,
   defaultPos,
   steps,
-  backgroundColor = 'rgb(231, 231, 231)',
-  // stepColor = 'rgba(0, 0, 0, 0.2)',
-  // borderColor = 'rgb(255, 255, 255)',
   children,
   onChange,
   onStart,
-  onMove,
+  onStep,
   onStop,
   inactive,
   isLoader = false,
   defsChildren,
   svgProps = {
     outerCirle: {
-      stroke:"lightblue"
+      stroke:"blue",
     },
     knob: {
-      fill: "yellow",
-      stroke: "lightgray"
+      fill: "white",
+      stroke: "red",
     },
     progress: {
-      stroke: 'url(#grad)'
-    }
+      stroke: 'yellow'
+    } 
   }
 }) => {
 
@@ -128,7 +124,6 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         px: number,
         py: number
       )=> {
-        onMove && onMove();
         const newPos = calculateMovement(moveX - px, moveY - py, radius, strokeWidth);
 
         if ((newPos < -0.3 && pos > 1.3)
@@ -139,8 +134,9 @@ const CircularPicker: React.FC<CircularPickerProps> = ({
         if (!inactive) {
           setPos(newPos);
           onChange(posToPercent(newPos));
-          if (Math.floor(posToPercent(newPos)) % 10 === 0) {
-            //  if (Platform.OS === 'ios') { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) }
+          const stepPassed = Math.floor(posToPercent(newPos)) % 10 === 0;
+          if (stepPassed) {
+            onStep && onStep();
           }
         }
       });
