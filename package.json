@@ -1,6 +1,6 @@
 {
   "name": "@moneybounce/react-native-circular-picker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A javascript circular picker that works on ios, android and web.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -71,8 +71,7 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*",
-    "react-native-svg": "^12.4.0"
+    "react-native": "*"
   },
   "jest": {
     "preset": "react-native",
@@ -143,5 +142,7 @@
       ]
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-native-svg": "^12.4.0"
+  }
 }
