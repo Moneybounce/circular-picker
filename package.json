@@ -1,6 +1,6 @@
 {
   "name": "@moneybounce/react-native-circular-picker",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A javascript circular picker that works on ios, android and web.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
