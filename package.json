@@ -1,5 +1,5 @@
 {
-  "name": "react-native-circular-picker",
+  "name": "@moneybounce/react-native-circular-picker",
   "version": "0.1.0",
   "description": "A javascript circular picker that works on ios, android and web.",
   "main": "lib/commonjs/index",
@@ -28,7 +28,7 @@
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn && yarn example pods"
+    "bootstrap": "yarn example && yarn && yarn example"
   },
   "keywords": [
     "react-native",
